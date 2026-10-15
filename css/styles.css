@@ -1,4 +1,27 @@
-:root {
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space);
+  margin-bottom: var(--space);
+}
+
+.card {
+  background: var(--color-background);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius);
+  padding: var(--space);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+  margin: 0 0 8px;
+  color: var(--color-text);
+}
+
+.card-text {
+  margin: 0;
+  color: var(--color-muted);
+}:root {
   --color-primary: #2563eb;
   --color-text: #1f2937;
   --color-muted: #6b7280;
