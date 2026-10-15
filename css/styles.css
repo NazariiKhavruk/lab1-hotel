@@ -1,0 +1,31 @@
+:root {
+  --color-primary: #2563eb;
+  --color-text: #1f2937;
+  --color-muted: #6b7280;
+  --color-surface: #ffffff;
+  --color-background: #f3f4f6;
+  --radius: 12px;
+  --space: 16px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  line-height: 1.5;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
