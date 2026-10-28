@@ -128,6 +128,18 @@ h3 {
   }
 }
 
+.details-toggle {
+  margin-top: v.$space-md;
+}
+
+.extra-details {
+  margin-top: v.$space-md;
+}
+
+.is-hidden {
+  display: none;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
