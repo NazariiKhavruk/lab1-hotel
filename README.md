@@ -73,7 +73,7 @@ lab1-hotel/
 
 ## Посилання та висновок
 
-Pull request: (посилання буде після створення)
+Pull request: https://github.com/NazariiKhavruk/lab1-hotel/pull/3
 
 Висновок: у цій роботі я навчився підключати зовнішній скрипт з `defer`, знаходити елементи через `querySelector()`, обробляти події через `addEventListener()` та змінювати інтерфейс через `classList` і `textContent`. Також побачив, навіщо кнопкам `aria-expanded` і `aria-pressed`. Практикувався з Git: окремі коміти за форматом `type: description`.
 
