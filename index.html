@@ -24,6 +24,11 @@
             <p>Hilton Kyiv знаходиться в центрі міста, недалеко від Майдану Незалежності. Готель має 262 номери різних категорій і підходить як для ділових поїздок, так і для туристичного відпочинку.</p>
             <p>Заклад працює з 2012 року. Є зала для конференцій, фітнес-центр і ресторан на першому поверсі.</p>
             <img src="images/night-exterior.avif" alt="Фасад готелю Hilton у центрі Києва">
+            <button class="button details-toggle" type="button" aria-expanded="false" aria-controls="extra-details">Показати більше</button>
+            <div id="extra-details" class="extra-details is-hidden">
+                <p>Від готелю до станції метро «Майдан Незалежності» — п’ять хвилин пішки. З аеропорту «Бориспіль» можна доїхати за 40 хвилин.</p>
+                <p>Заселення — з 14:00, виселення — до 12:00. Цілодобова рецепція допоможе з трансфером і екскурсіями.</p>
+            </div>
         </section>
 
         <section class="section" id="rooms">
@@ -37,6 +42,7 @@
                 <article class="card">
                     <h3 class="card-title">Deluxe</h3>
                     <p class="card-text">2 особи, вид на місто</p>
+                    <button class="button favorite-button" type="button" aria-pressed="false">Додати в обране</button>
                 </article>
                 <article class="card">
                     <h3 class="card-title">Executive Suite</h3>
@@ -101,7 +107,11 @@
                     </div>
                     <div class="form-field">
                         <label for="guests">Кількість гостей</label>
-                        <input id="guests" name="guests" type="number" min="1" max="4" value="1" required>
+                        <div class="guests-counter">
+                            <button class="button counter-button" type="button" id="guests-minus" aria-label="Зменшити кількість гостей">−</button>
+                            <input id="guests" name="guests" type="number" min="1" max="4" value="1" required>
+                            <button class="button counter-button" type="button" id="guests-plus" aria-label="Збільшити кількість гостей">+</button>
+                        </div>
                     </div>
                 </div>
 
@@ -134,5 +144,7 @@
     <footer class="site-footer">
         <p>© 2026 Готель Hilton Київ</p>
     </footer>
+
+    <script src="js/main.js" defer></script>
 </body>
 </html>
