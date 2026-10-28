@@ -229,6 +229,21 @@ textarea:focus:invalid {
   border-color: v.$color-error;
 }
 
+.guests-counter {
+  display: flex;
+  gap: v.$space-sm;
+}
+
+.counter-button {
+  flex: none;
+  padding: 0.625rem 1rem;
+
+  &:disabled {
+    background-color: v.$color-input-border;
+    cursor: not-allowed;
+  }
+}
+
 input[type="radio"] {
   width: auto;
 }
