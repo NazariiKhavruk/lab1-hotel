@@ -123,6 +123,18 @@ h3 {
   outline-offset: 3px;
 }
 
+.details-toggle {
+  margin-top: 1rem;
+}
+
+.extra-details {
+  margin-top: 1rem;
+}
+
+.is-hidden {
+  display: none;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
