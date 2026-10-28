@@ -225,6 +225,20 @@ textarea:focus:invalid {
   border-color: #b91c1c;
 }
 
+.guests-counter {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.counter-button {
+  flex: none;
+  padding: 0.625rem 1rem;
+}
+.counter-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
 input[type=radio] {
   width: auto;
 }
