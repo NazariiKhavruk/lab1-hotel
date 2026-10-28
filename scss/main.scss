@@ -173,6 +173,19 @@ h3 {
   color: v.$color-muted;
 }
 
+.favorite-button {
+  margin-top: v.$space-md;
+
+  &.is-active {
+    background-color: v.$color-primary-dark;
+  }
+}
+
+.card.is-active {
+  border-color: v.$color-primary;
+  background: v.$color-primary-light;
+}
+
 .booking-form {
   display: grid;
   gap: v.$space-md;
