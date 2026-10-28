@@ -170,6 +170,18 @@ h3 {
   color: #6b7280;
 }
 
+.favorite-button {
+  margin-top: 1rem;
+}
+.favorite-button.is-active {
+  background-color: #1d4ed8;
+}
+
+.card.is-active {
+  border-color: #2563eb;
+  background: #dbeafe;
+}
+
 .booking-form {
   display: grid;
   gap: 1rem;
