@@ -64,6 +64,8 @@ const categoryLabels = {
 };
 
 const grid = document.querySelector("#room-grid");
+const searchInput = document.querySelector("#room-search");
+const categorySelect = document.querySelector("#category-filter");
 const resultsCount = document.querySelector("#results-count");
 const emptyMessage = document.querySelector("#empty-message");
 
@@ -83,6 +85,23 @@ function renderRooms(roomsToRender) {
   resultsCount.textContent = `Знайдено: ${roomsToRender.length}`;
   emptyMessage.hidden = roomsToRender.length !== 0;
 }
+
+function applyFilters() {
+  const query = searchInput.value.trim().toLowerCase();
+  const selectedCategory = categorySelect.value;
+
+  const filteredRooms = rooms.filter((room) => {
+    const searchableText = `${room.title} ${room.description}`.toLowerCase();
+    const matchesText = searchableText.includes(query);
+    const matchesCategory = selectedCategory === "all" || room.category === selectedCategory;
+    return matchesText && matchesCategory;
+  });
+
+  renderRooms(filteredRooms);
+}
+
+searchInput.addEventListener("input", applyFilters);
+categorySelect.addEventListener("change", applyFilters);
 
 renderRooms(rooms);
 
