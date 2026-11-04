@@ -40,7 +40,7 @@
 | `deluxe` | Deluxe | Deluxe, Deluxe King, Deluxe з балконом |
 | `suite` | Suite | Executive Suite, Family Suite |
 
-Для всіх номерів використано одне зображення `room.avif`, бо інших фото в проєкті немає.
+Фото номерів узято з Unsplash (вільна ліцензія [Unsplash License](https://unsplash.com/license)), це ілюстративні фото готельних номерів, а не саме Hilton Kyiv. Автори: Point3D Commercial Imaging Ltd., Marcel Strauß, Linus Mimietz, João Emanuel, Lisha Riabinina, Hiram Huang, Nusrat Ali, visualsofdana. Фото обрізані до формату 16:9 і зменшені.
 
 ## Як це працює
 
@@ -80,7 +80,7 @@
 ## Обмеження
 
 - `innerHTML` використано лише для масиву, який написано в коді. Дані користувача через нього не підставляються.
-- Один файл зображення на всі номери.
+- Фото номерів ілюстративні, це не реальні номери Hilton Kyiv.
 - Стан не зберігається після перезавантаження сторінки.
 
 ## Посилання та висновок
