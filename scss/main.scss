@@ -140,6 +140,15 @@ h3 {
   display: none;
 }
 
+.catalog-controls {
+  margin-bottom: v.$space-md;
+}
+
+.results-count {
+  margin: 0 0 v.$space-md;
+  color: v.$color-muted;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
