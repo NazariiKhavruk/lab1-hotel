@@ -57,6 +57,8 @@ const rooms = [
   }
 ];
 
+const favoriteIds = new Set();
+
 const categoryLabels = {
   standard: "Standard",
   deluxe: "Deluxe",
@@ -70,12 +72,14 @@ const resultsCount = document.querySelector("#results-count");
 const emptyMessage = document.querySelector("#empty-message");
 
 function createCard(room) {
+  const isFavorite = favoriteIds.has(room.id);
   return `
-    <article class="card" data-id="${room.id}">
+    <article class="card${isFavorite ? " is-active" : ""}" data-id="${room.id}">
       <img class="card-image" src="${room.image}" alt="${room.title}">
       <p class="card-category">${categoryLabels[room.category]}</p>
       <h3 class="card-title">${room.title}</h3>
       <p class="card-text">${room.description}</p>
+      <button class="button favorite-button${isFavorite ? " is-active" : ""}" type="button" aria-pressed="${isFavorite}">${isFavorite ? "В обраному" : "Додати в обране"}</button>
     </article>
   `;
 }
@@ -99,6 +103,26 @@ function applyFilters() {
 
   renderRooms(filteredRooms);
 }
+
+grid.addEventListener("click", (event) => {
+  const favoriteButton = event.target.closest(".favorite-button");
+  if (!favoriteButton) {
+    return;
+  }
+
+  const card = favoriteButton.closest(".card");
+  const id = Number(card.dataset.id);
+  const isActive = favoriteButton.classList.toggle("is-active");
+  card.classList.toggle("is-active", isActive);
+  favoriteButton.textContent = isActive ? "В обраному" : "Додати в обране";
+  favoriteButton.setAttribute("aria-pressed", String(isActive));
+
+  if (isActive) {
+    favoriteIds.add(id);
+  } else {
+    favoriteIds.delete(id);
+  }
+});
 
 searchInput.addEventListener("input", applyFilters);
 categorySelect.addEventListener("change", applyFilters);
