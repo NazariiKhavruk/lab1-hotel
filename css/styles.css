@@ -135,6 +135,15 @@ h3 {
   display: none;
 }
 
+.catalog-controls {
+  margin-bottom: 1rem;
+}
+
+.results-count {
+  margin: 0 0 1rem;
+  color: #6b7280;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
