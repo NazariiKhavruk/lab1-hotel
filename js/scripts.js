@@ -63,6 +63,29 @@ const categoryLabels = {
   suite: "Suite"
 };
 
+const grid = document.querySelector("#room-grid");
+const resultsCount = document.querySelector("#results-count");
+const emptyMessage = document.querySelector("#empty-message");
+
+function createCard(room) {
+  return `
+    <article class="card" data-id="${room.id}">
+      <img class="card-image" src="${room.image}" alt="${room.title}">
+      <p class="card-category">${categoryLabels[room.category]}</p>
+      <h3 class="card-title">${room.title}</h3>
+      <p class="card-text">${room.description}</p>
+    </article>
+  `;
+}
+
+function renderRooms(roomsToRender) {
+  grid.innerHTML = roomsToRender.map(createCard).join("");
+  resultsCount.textContent = `Знайдено: ${roomsToRender.length}`;
+  emptyMessage.hidden = roomsToRender.length !== 0;
+}
+
+renderRooms(rooms);
+
 const toggleButton = document.querySelector(".details-toggle");
 const details = document.querySelector("#extra-details");
 
@@ -70,16 +93,6 @@ toggleButton.addEventListener("click", () => {
   const isHidden = details.classList.toggle("is-hidden");
   toggleButton.textContent = isHidden ? "Показати більше" : "Приховати";
   toggleButton.setAttribute("aria-expanded", String(!isHidden));
-});
-
-const favoriteButton = document.querySelector(".favorite-button");
-const favoriteCard = favoriteButton.closest(".card");
-
-favoriteButton.addEventListener("click", () => {
-  const isActive = favoriteButton.classList.toggle("is-active");
-  favoriteCard.classList.toggle("is-active", isActive);
-  favoriteButton.textContent = isActive ? "В обраному" : "Додати в обране";
-  favoriteButton.setAttribute("aria-pressed", String(isActive));
 });
 
 const guestsInput = document.querySelector("#guests");
