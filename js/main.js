@@ -6,6 +6,9 @@ const categorySelect = document.querySelector("#category-filter");
 const grid = document.querySelector("#room-grid");
 const resultsCount = document.querySelector("#results-count");
 const emptyMessage = document.querySelector("#empty-message");
+const statusMessage = document.querySelector("#load-status");
+const errorMessage = document.querySelector("#load-error");
+const retryButton = document.querySelector("#retry-load");
 
 let items = [];
 
@@ -15,12 +18,41 @@ function updateView() {
 }
 
 async function init() {
-  items = await loadItems();
-  updateView();
+  searchInput.disabled = true;
+  categorySelect.disabled = true;
+  retryButton.disabled = true;
+  retryButton.hidden = true;
+  errorMessage.hidden = true;
+  statusMessage.textContent = "Завантаження…";
+  grid.setAttribute("aria-busy", "true");
+  grid.replaceChildren();
+  resultsCount.textContent = "";
+  emptyMessage.hidden = true;
+
+  let loaded = false;
+
+  try {
+    items = await loadItems();
+    updateView();
+    loaded = true;
+  } catch (error) {
+    items = [];
+    errorMessage.textContent = "Не вдалося завантажити каталог. Спробуйте ще раз.";
+    errorMessage.hidden = false;
+    retryButton.hidden = false;
+    console.error(error);
+  } finally {
+    statusMessage.textContent = "";
+    grid.setAttribute("aria-busy", "false");
+    searchInput.disabled = !loaded;
+    categorySelect.disabled = !loaded;
+    retryButton.disabled = false;
+  }
 }
 
 searchInput.addEventListener("input", updateView);
 categorySelect.addEventListener("change", updateView);
+retryButton.addEventListener("click", init);
 setupFavorites(grid);
 init();
 

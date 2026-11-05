@@ -49,8 +49,11 @@
                     </select>
                 </div>
             </div>
+            <p id="load-status" class="load-status" role="status"></p>
+            <p id="load-error" class="load-error" role="alert" hidden></p>
+            <button id="retry-load" class="button retry-button" type="button" hidden>Спробувати ще раз</button>
             <p id="results-count" class="results-count" aria-live="polite"></p>
-            <div id="room-grid" class="card-grid"></div>
+            <div id="room-grid" class="card-grid" aria-busy="false"></div>
             <p id="empty-message" class="empty-message" hidden>Нічого не знайдено.</p>
             <a href="#booking" class="button">Забронювати номер</a>
             <img src="images/room.avif" alt="Номер категорії Deluxe в готелі Hilton">
