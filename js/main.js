@@ -1,9 +1,10 @@
 import { loadItems } from "./api.js";
-import { filterItems, renderItems, setupFavorites } from "./catalog.js";
+import { filterItems, renderItems, setupFavorites, sortItems } from "./catalog.js";
 import { debounce } from "./utils.js";
 
 const searchInput = document.querySelector("#room-search");
 const categorySelect = document.querySelector("#category-filter");
+const sortSelect = document.querySelector("#sort-select");
 const grid = document.querySelector("#room-grid");
 const resultsCount = document.querySelector("#results-count");
 const emptyMessage = document.querySelector("#empty-message");
@@ -15,12 +16,13 @@ let items = [];
 
 function updateView() {
   const filteredItems = filterItems(items, searchInput.value, categorySelect.value);
-  renderItems(filteredItems, grid, resultsCount, emptyMessage);
+  renderItems(sortItems(filteredItems, sortSelect.value), grid, resultsCount, emptyMessage);
 }
 
 async function init() {
   searchInput.disabled = true;
   categorySelect.disabled = true;
+  sortSelect.disabled = true;
   retryButton.disabled = true;
   retryButton.hidden = true;
   errorMessage.hidden = true;
@@ -47,12 +49,14 @@ async function init() {
     grid.setAttribute("aria-busy", "false");
     searchInput.disabled = !loaded;
     categorySelect.disabled = !loaded;
+    sortSelect.disabled = !loaded;
     retryButton.disabled = false;
   }
 }
 
 searchInput.addEventListener("input", debounce(updateView, 300));
 categorySelect.addEventListener("change", updateView);
+sortSelect.addEventListener("change", updateView);
 retryButton.addEventListener("click", init);
 setupFavorites(grid);
 init();
