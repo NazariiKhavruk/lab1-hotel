@@ -31,7 +31,7 @@ lab1-hotel/
 | Модуль | Що робить |
 | --- | --- |
 | `api.js` | `loadItems()`: завантажує `items.json`, перевіряє `response.ok`, формат і кожен запис |
-| `catalog.js` | `filterItems()` (чиста фільтрація), `renderItems()` (рендеринг через DOM-вузли), `setupFavorites()` |
+| `catalog.js` | `filterItems()` (чиста фільтрація), `sortItems()` (сортування стратегіями), `renderItems()` (рендеринг через DOM-вузли), `setupFavorites()` |
 | `utils.js` | `debounce()` і словник назв категорій |
 | `main.js` | знаходить елементи сторінки, керує станами, реєструє обробники |
 
@@ -60,6 +60,31 @@ lab1-hotel/
 **Замикання.** `debounce(fn, delay)` повертає функцію, яка пам'ятає змінну `timerId` між викликами. Кожне нове введення скасовує попередній таймер і запускає новий, тому пошук виконується один раз після паузи 300 мс. Це функція вищого порядку: вона приймає функцію і повертає функцію. Debounced-функція створюється один раз під час реєстрації обробника. `setTimeout` гарантує лише мінімальну затримку, а не точний момент виконання.
 
 **Безпечний DOM.** Картки створюються через `createElement()`, `textContent` і `append()`, а не через `innerHTML`, тому текст з JSON не може стати розміткою. Список перемальовується через `replaceChildren()`.
+
+## Додаткове завдання: Strategy для сортування
+
+Обрано патерн Strategy: у `catalog.js` є об'єкт `sortStrategies`, де кожна стратегія це окрема функція порівняння:
+
+```js
+const sortStrategies = {
+  default: (a, b) => a.id - b.id,
+  "title-asc": (a, b) => a.title.localeCompare(b.title, "uk"),
+  "title-desc": (a, b) => b.title.localeCompare(a.title, "uk")
+};
+
+export function sortItems(items, strategy = "default") {
+  const compare = sortStrategies[strategy] ?? sortStrategies.default;
+  return [...items].sort(compare);
+}
+```
+
+Значення поля «Сортування» (`default`, `title-asc`, `title-desc`) вибирає стратегію за назвою. `sortItems()` сортує **копію** масиву (`[...items]`), тому початкові дані не змінюються, і це чиста функція. Невідома назва стратегії безпечно переходить на `default`.
+
+Користь: щоб додати новий спосіб сортування (наприклад, за категорією), достатньо дописати одну функцію в `sortStrategies` і один `option` у HTML. Умов `if`/`switch` у `main.js` і самій `sortItems()` змінювати не треба. Порядок обробки такий: спочатку `filterItems()`, потім `sortItems()`, потім `renderItems()`. Кирилиця в `localeCompare("uk")` сортується перед латинкою, тому «Deluxe з балконом» стоїть перед «Deluxe King».
+
+Сортування Я → А:
+
+![Сортування](images/screenshot-lab7-sort.png)
 
 ## Скриншоти
 
