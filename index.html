@@ -48,9 +48,20 @@
                         <option value="suite">Suite</option>
                     </select>
                 </div>
+                <div class="form-field">
+                    <label for="sort-select">Сортування</label>
+                    <select id="sort-select">
+                        <option value="default">За замовчуванням</option>
+                        <option value="title-asc">За назвою А → Я</option>
+                        <option value="title-desc">За назвою Я → А</option>
+                    </select>
+                </div>
             </div>
+            <p id="load-status" class="load-status" role="status"></p>
+            <p id="load-error" class="load-error" role="alert" hidden></p>
+            <button id="retry-load" class="button retry-button" type="button" hidden>Спробувати ще раз</button>
             <p id="results-count" class="results-count" aria-live="polite"></p>
-            <div id="room-grid" class="card-grid"></div>
+            <div id="room-grid" class="card-grid" aria-busy="false"></div>
             <p id="empty-message" class="empty-message" hidden>Нічого не знайдено.</p>
             <a href="#booking" class="button">Забронювати номер</a>
             <img src="images/room.avif" alt="Номер категорії Deluxe в готелі Hilton">
@@ -148,6 +159,6 @@
         <p>© 2026 Готель Hilton Київ</p>
     </footer>
 
-    <script src="js/scripts.js" defer></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

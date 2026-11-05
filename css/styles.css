@@ -10,6 +10,10 @@ body {
   background: #f3f4f6;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -136,6 +140,31 @@ h3 {
 }
 
 .catalog-controls {
+  margin-bottom: 1rem;
+}
+@media (min-width: 48rem) {
+  .catalog-controls.form-row {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
+
+.load-status {
+  margin: 0 0 1rem;
+  color: #6b7280;
+}
+.load-status:empty {
+  display: none;
+}
+
+.load-error {
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #b91c1c;
+  border-radius: 0.5rem;
+  color: #b91c1c;
+}
+
+.retry-button {
   margin-bottom: 1rem;
 }
 
