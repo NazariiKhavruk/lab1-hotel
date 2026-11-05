@@ -1,5 +1,6 @@
 import { loadItems } from "./api.js";
 import { filterItems, renderItems, setupFavorites } from "./catalog.js";
+import { debounce } from "./utils.js";
 
 const searchInput = document.querySelector("#room-search");
 const categorySelect = document.querySelector("#category-filter");
@@ -50,7 +51,7 @@ async function init() {
   }
 }
 
-searchInput.addEventListener("input", updateView);
+searchInput.addEventListener("input", debounce(updateView, 300));
 categorySelect.addEventListener("change", updateView);
 retryButton.addEventListener("click", init);
 setupFavorites(grid);
