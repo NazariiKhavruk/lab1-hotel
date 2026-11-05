@@ -119,7 +119,7 @@ export function sortItems(items, strategy = "default") {
 
 ## Посилання та висновок
 
-Pull request: https://github.com/NazariiKhavruk/lab1-hotel/pull/<built-in function next>
+Pull request: https://github.com/NazariiKhavruk/lab1-hotel/pull/6
 
 Висновок: у цій роботі я розділив код на ES-модулі, завантажував дані з JSON через `fetch()` з `async`/`await`, обробляв помилки через `try/catch/finally` та показував стани завантаження й помилки з повторною спробою. Зрозумів різницю між чистою функцією фільтрації та рендерингом із побічними ефектами і як замикання допомагає зробити відкладений пошук. Практикувався з Git: окремі коміти за форматом `type: description`.
 
