@@ -12,6 +12,17 @@ export function filterItems(items, query, category) {
   });
 }
 
+const sortStrategies = {
+  default: (a, b) => a.id - b.id,
+  "title-asc": (a, b) => a.title.localeCompare(b.title, "uk"),
+  "title-desc": (a, b) => b.title.localeCompare(a.title, "uk")
+};
+
+export function sortItems(items, strategy = "default") {
+  const compare = sortStrategies[strategy] ?? sortStrategies.default;
+  return [...items].sort(compare);
+}
+
 function setFavoriteState(card, button, isActive) {
   card.classList.toggle("is-active", isActive);
   button.classList.toggle("is-active", isActive);

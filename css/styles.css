@@ -142,6 +142,11 @@ h3 {
 .catalog-controls {
   margin-bottom: 1rem;
 }
+@media (min-width: 48rem) {
+  .catalog-controls.form-row {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+}
 
 .load-status {
   margin: 0 0 1rem;
