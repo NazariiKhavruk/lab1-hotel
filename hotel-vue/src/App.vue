@@ -1,6 +1,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 import RoomList from './components/RoomList.vue'
+import UserNoteForm from './components/UserNoteForm.vue'
+import UserNoteList from './components/UserNoteList.vue'
 import { categoryLabels, rooms } from './data/rooms.js'
 
 const query = ref('')
@@ -16,11 +18,26 @@ const filteredRooms = computed(() => {
   )
 })
 
+const userItems = ref([])
+const statusMessage = ref('')
+const noteForm = ref(null)
+
 const hasFilters = computed(() => query.value !== '' || category.value !== 'all')
 
 function resetFilters() {
   query.value = ''
   category.value = 'all'
+}
+
+function addUserItem(item) {
+  userItems.value = [...userItems.value, item]
+  statusMessage.value = 'Нотатку додано до списку.'
+}
+
+function deleteUserItem(id) {
+  userItems.value = userItems.value.filter((item) => item.id !== id)
+  statusMessage.value = 'Нотатку видалено.'
+  noteForm.value.focusTitle()
 }
 </script>
 
@@ -29,6 +46,7 @@ function resetFilters() {
     <h1>Готель Hilton Київ</h1>
     <nav class="main-nav">
       <a href="#rooms">Номери</a>
+      <a href="#notes">Мої нотатки</a>
     </nav>
   </header>
 
@@ -66,6 +84,15 @@ function resetFilters() {
       <p class="results-count" aria-live="polite">Знайдено: {{ filteredRooms.length }}</p>
       <RoomList :items="filteredRooms" />
       <p v-if="filteredRooms.length === 0" class="empty-message">Нічого не знайдено.</p>
+    </section>
+
+    <section id="notes" class="section">
+      <h2>Мої нотатки до поїздки</h2>
+      <p>Запишіть, що не хочете забути: побажання до номера, харчування чи дозвілля.</p>
+      <UserNoteForm ref="noteForm" @add="addUserItem" />
+      <p class="form-message" role="status">{{ statusMessage }}</p>
+      <h3>Мої нотатки</h3>
+      <UserNoteList :items="userItems" @delete="deleteUserItem" />
     </section>
   </main>
 
