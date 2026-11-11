@@ -1,9 +1,10 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import RoomList from './components/RoomList.vue'
 import UserNoteForm from './components/UserNoteForm.vue'
 import UserNoteList from './components/UserNoteList.vue'
 import { categoryLabels, rooms } from './data/rooms.js'
+import { readUserItems, writeUserItems } from './storage.js'
 
 const query = ref('')
 const category = ref('all')
@@ -18,9 +19,29 @@ const filteredRooms = computed(() => {
   )
 })
 
-const userItems = ref([])
 const statusMessage = ref('')
 const noteForm = ref(null)
+
+function restoreUserItems() {
+  try {
+    return readUserItems()
+  } catch (error) {
+    statusMessage.value = 'Не вдалося відновити записи. Список почато в пам’яті.'
+    console.error(error)
+    return []
+  }
+}
+
+const userItems = ref(restoreUserItems())
+
+watch(userItems, (items) => {
+  try {
+    writeUserItems(items)
+  } catch (error) {
+    statusMessage.value = 'Зміни є в пам’яті, але не збережені після закриття сторінки.'
+    console.error(error)
+  }
+})
 
 const hasFilters = computed(() => query.value !== '' || category.value !== 'all')
 
@@ -31,12 +52,12 @@ function resetFilters() {
 
 function addUserItem(item) {
   userItems.value = [...userItems.value, item]
-  statusMessage.value = 'Нотатку додано до списку.'
+  statusMessage.value = 'Нотатку додано й збережено.'
 }
 
 function deleteUserItem(id) {
   userItems.value = userItems.value.filter((item) => item.id !== id)
-  statusMessage.value = 'Нотатку видалено.'
+  statusMessage.value = 'Нотатку видалено, зміни збережено.'
   noteForm.value.focusTitle()
 }
 </script>
