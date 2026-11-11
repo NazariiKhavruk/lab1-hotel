@@ -335,6 +335,41 @@ input[type="radio"] {
   }
 }
 
+.form-message {
+  margin: v.$space-sm 0 v.$space-md;
+  color: v.$color-muted;
+
+  &:empty {
+    display: none;
+  }
+
+  &.is-error {
+    color: v.$color-error;
+  }
+}
+
+.user-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$space-md;
+  margin-bottom: v.$space-md;
+
+  @include m.respond-from(v.$bp-tablet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.button.delete-button {
+  margin-top: v.$space-md;
+  border: 1px solid v.$color-error;
+  background: transparent;
+  color: v.$color-error;
+
+  &:hover {
+    background: rgba(185, 28, 28, 0.08);
+  }
+}
+
 .site-footer {
   text-align: center;
   padding: v.$space-md;
