@@ -59,7 +59,7 @@ defineExpose({ focusTitle })
 </script>
 
 <template>
-  <form class="booking-form" @submit.prevent="submitForm">
+  <form class="booking-form" @submit.prevent="submitForm" @invalid.capture="error = ''">
     <div class="form-field">
       <label for="user-title">Назва</label>
       <input
