@@ -1,6 +1,7 @@
 import { loadItems } from "./api.js";
 import { filterItems, renderItems, setupFavorites, sortItems } from "./catalog.js";
 import { debounce } from "./utils.js";
+import { initUserItems } from "./userItems.js";
 
 const searchInput = document.querySelector("#room-search");
 const categorySelect = document.querySelector("#category-filter");
@@ -59,6 +60,7 @@ categorySelect.addEventListener("change", updateView);
 sortSelect.addEventListener("change", updateView);
 retryButton.addEventListener("click", init);
 setupFavorites(grid);
+initUserItems();
 init();
 
 // Взаємодії з лабораторної №5

@@ -14,6 +14,7 @@
             <a href="#rooms">Номери</a>
             <a href="#services">Послуги</a>
             <a href="#booking">Бронювання</a>
+            <a href="#notes">Мої нотатки</a>
             <a href="#contacts">Контакти</a>
         </nav>
     </header>
@@ -144,6 +145,38 @@
 
                 <button type="submit" class="button">Надіслати заявку</button>
             </form>
+        </section>
+
+        <section class="section" id="notes">
+            <h2>Мої нотатки до поїздки</h2>
+            <p>Запишіть, що не хочете забути: побажання до номера, харчування чи дозвілля.</p>
+            <form id="user-item-form" class="booking-form">
+                <div class="form-field">
+                    <label for="user-title">Назва</label>
+                    <input id="user-title" name="title" required minlength="3" maxlength="80">
+                </div>
+
+                <div class="form-field">
+                    <label for="user-category">Категорія</label>
+                    <select id="user-category" name="category" required>
+                        <option value="">Оберіть категорію</option>
+                        <option value="room">Номер</option>
+                        <option value="food">Харчування</option>
+                        <option value="leisure">Дозвілля</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="user-description">Опис</label>
+                    <textarea id="user-description" name="description" rows="4" required minlength="10" maxlength="500"></textarea>
+                </div>
+
+                <button type="submit" class="button">Додати</button>
+            </form>
+            <p id="user-message" class="form-message" role="status"></p>
+            <h3>Мої нотатки</h3>
+            <div id="user-list" class="user-list"></div>
+            <p id="user-empty" class="empty-message">Власних нотаток поки немає.</p>
         </section>
 
         <section class="section" id="contacts">

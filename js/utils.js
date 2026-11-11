@@ -4,6 +4,12 @@ export const categoryLabels = {
   suite: "Suite"
 };
 
+export const userCategoryLabels = {
+  room: "Номер",
+  food: "Харчування",
+  leisure: "Дозвілля"
+};
+
 export function debounce(fn, delay = 300) {
   let timerId;
 
