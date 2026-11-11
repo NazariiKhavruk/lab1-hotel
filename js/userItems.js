@@ -1,3 +1,4 @@
+import { readUserItems, writeUserItems } from "./storage.js";
 import { userCategoryLabels } from "./utils.js";
 
 function validateNote({ title, category, description }) {
@@ -50,11 +51,19 @@ export function initUserItems() {
   const message = document.querySelector("#user-message");
   const empty = document.querySelector("#user-empty");
 
-  let userItems = [];
-
   function showMessage(text, isError = false) {
     message.textContent = text;
     message.classList.toggle("is-error", isError);
+  }
+
+  let userItems;
+
+  try {
+    userItems = readUserItems();
+  } catch (error) {
+    userItems = [];
+    showMessage("Не вдалося відновити записи. Список почато в пам’яті.", true);
+    console.error(error);
   }
 
   function renderUserItems() {
@@ -63,6 +72,20 @@ export function initUserItems() {
 
     list.replaceChildren(fragment);
     empty.hidden = userItems.length !== 0;
+  }
+
+  function commit(nextItems) {
+    userItems = nextItems;
+    renderUserItems();
+
+    try {
+      writeUserItems(userItems);
+      return true;
+    } catch (error) {
+      showMessage("Зміни є в пам’яті, але не збережені після закриття сторінки.", true);
+      console.error(error);
+      return false;
+    }
   }
 
   form.addEventListener("submit", (event) => {
@@ -87,9 +110,11 @@ export function initUserItems() {
       return;
     }
 
-    userItems = [...userItems, record];
-    renderUserItems();
-    showMessage("Нотатку додано до списку.");
+    const saved = commit([...userItems, record]);
+    if (saved) {
+      showMessage("Нотатку додано й збережено.");
+    }
+
     form.reset();
     form.elements.namedItem("title").focus();
   });
@@ -101,9 +126,11 @@ export function initUserItems() {
     }
 
     const id = button.dataset.deleteId;
-    userItems = userItems.filter((item) => item.id !== id);
-    renderUserItems();
-    showMessage("Нотатку видалено.");
+    const saved = commit(userItems.filter((item) => item.id !== id));
+    if (saved) {
+      showMessage("Нотатку видалено, зміни збережено.");
+    }
+
     form.elements.namedItem("title").focus();
   });
 
