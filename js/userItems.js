@@ -92,6 +92,7 @@ export function initUserItems() {
     event.preventDefault();
 
     if (!form.reportValidity()) {
+      showMessage("");
       return;
     }
 
