@@ -16,6 +16,13 @@ const store = useRoomsStore()
     <h3 class="card-title">{{ item.title }}</h3>
     <p class="card-text">{{ item.description }}</p>
     <div class="card-actions">
+      <RouterLink
+        class="button button-secondary"
+        :to="{ name: 'room', params: { id: item.id } }"
+        :aria-label="`Докладніше про номер ${item.title}`"
+      >
+        Докладніше
+      </RouterLink>
       <button
         class="button favorite-button"
         :class="{ 'is-active': store.isFavorite(item.id) }"

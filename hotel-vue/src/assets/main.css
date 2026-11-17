@@ -154,6 +154,83 @@ code {
   text-align: center;
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: none;
+}
+.back-link:hover {
+  text-decoration: underline;
+}
+.back-link:focus-visible,
+.similar-links a:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.room-detail-layout {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+@media (min-width: 48rem) {
+  .room-detail-layout {
+    grid-template-columns: 3fr 2fr;
+    align-items: start;
+  }
+}
+
+.room-detail-image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+  border-radius: 0.75rem;
+}
+
+.detail-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1rem;
+  margin: 1rem 0;
+}
+.detail-list dt {
+  font-weight: 600;
+}
+.detail-list dd {
+  margin: 0;
+  color: #374151;
+}
+
+.amenities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+.amenities li {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1e40af;
+  font-size: 0.9rem;
+}
+
+.similar-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+.similar-links a {
+  color: #2563eb;
+  font-weight: 600;
+}
+
 .details-toggle {
   margin-top: 1rem;
 }
@@ -274,11 +351,21 @@ code {
   margin: 0;
 }
 
+.card-grid .card {
+  display: flex;
+  flex-direction: column;
+}
+
 .card-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+.card-actions .button {
+  flex: 1 1 auto;
+  text-align: center;
 }
 
 .button-secondary {
