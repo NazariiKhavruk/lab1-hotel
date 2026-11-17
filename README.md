@@ -1,3 +1,226 @@
+# Лабораторна робота №11
+
+## Тема, мета та опис проєкту
+
+Тема: завантаження даних із зовнішнього API у Vue 3 та Pinia.
+
+Мета: навчитися завантажувати дані через `fetch` у Pinia action, перевіряти `response.ok` і структуру JSON, показувати стани loading, error, empty і success, повторювати невдалий запит і при цьому зберегти маршрути та спільний стан з лаби 10.
+
+Опис проєкту: сайт готелю Hilton Київ (варіант 20), продовження `hotel-vue/` з лаби 10. Для теми «Готель» методичка радить Open-Meteo: місце розташування і прогноз для гостей, а номери, послуги, фото та ціни лишаються локальними. Тому каталог номерів і обране не змінювались, а з'явився новий розділ «Погода»: прогноз на 7 днів для району готелю і детальна сторінка кожного дня з погодою по годинах.
+
+## Джерело даних
+
+| | |
+| --- | --- |
+| API | Open-Meteo Forecast API |
+| Документація | https://open-meteo.com/en/docs |
+| Endpoint | `GET https://api.open-meteo.com/v1/forecast` |
+| Параметри | `latitude=50.4433`, `longitude=30.5077` (бульвар Тараса Шевченка, 30), `daily=...`, `hourly=temperature_2m,precipitation_probability,weather_code`, `timezone=Europe/Kyiv`, `wind_speed_unit=ms`, `forecast_days=7` |
+| Формат | JSON, HTTPS, CORS дозволений (`Access-Control-Allow-Origin: *`) |
+| Ключ | не потрібен |
+| Обмеження | безкоштовно для некомерційного використання, до 600 запитів за хвилину і 10 000 за день; дані за ліцензією CC BY 4.0, тому на сторінці вказано джерело |
+
+Координати готелю записані в `src/config/api.js`. Geocoding API не знадобився, бо адреса готелю не змінюється і потрібен лише один запит.
+
+Поля, які використовуються: `daily.time`, `weather_code`, `temperature_2m_max`, `temperature_2m_min`, `precipitation_sum`, `precipitation_probability_max`, `wind_speed_10m_max`, `uv_index_max`, `sunrise`, `sunset` і погодинні `hourly.time`, `temperature_2m`, `precipitation_probability`, `weather_code`.
+
+Скорочена raw-відповідь (масиви обрізані до двох днів):
+
+```json
+{
+  "latitude": 50.423317,
+  "longitude": 30.491209,
+  "timezone": "Europe/Kyiv",
+  "daily_units": { "temperature_2m_max": "°C", "precipitation_sum": "mm", "wind_speed_10m_max": "m/s" },
+  "daily": {
+    "time": ["2026-11-17", "2026-11-18"],
+    "weather_code": [80, 80],
+    "temperature_2m_max": [5.9, 11.1],
+    "temperature_2m_min": [3.2, 4.8],
+    "precipitation_sum": [8.8, 2.7],
+    "precipitation_probability_max": [100, 100],
+    "wind_speed_10m_max": [3.83, 3.04],
+    "uv_index_max": [0.15, 1.1],
+    "sunrise": ["2026-11-17T07:15", "2026-11-18T07:16"],
+    "sunset": ["2026-11-17T16:10", "2026-11-18T16:08"]
+  },
+  "hourly": {
+    "time": ["2026-11-17T00:00", "2026-11-17T01:00"],
+    "temperature_2m": [4.7, 4.5],
+    "precipitation_probability": [68, 45],
+    "weather_code": [80, 3]
+  }
+}
+```
+
+Особливість API: дані приходять не масивом об'єктів, а окремими масивами для кожного поля. День з індексом `i` це `daily.time[i]`, `daily.temperature_2m_max[i]` і так далі.
+
+## Встановлення та запуск
+
+```
+git switch -c lab-11-api
+cd hotel-vue
+npm install
+npm run dev
+npm run build
+```
+
+Сторінка погоди: `http://localhost:5173/weather`. Нових бібліотек не додавалось, `fetch` вбудований у браузер.
+
+Адресу API можна змінити без зміни коду через змінну `VITE_API_URL` у файлі `.env` (приклад у `.env.example`, сам `.env` додано в `.gitignore`). Секретних ключів у проєкті немає: усі змінні `VITE_*` потрапляють у збірку і їх видно в браузері.
+
+## Структура (нове в лабі 11)
+
+```
+hotel-vue/src/
+├── config/api.js             координати готелю і API_URL
+├── services/weatherApi.js    fetch, перевірка response.ok і структури, нормалізація
+├── stores/weather.js         Pinia: days, loading, error, hasLoaded, loadForecast(), retry()
+├── utils/format.js           формат температури, чисел, «Сьогодні/Завтра»
+├── components/
+│   ├── ForecastCard.vue      картка одного дня
+│   └── ForecastList.vue      список карток
+└── views/
+    ├── WeatherView.vue       /weather, прогноз на тиждень
+    └── WeatherDayView.vue    /weather/:date, один день
+```
+
+Код розділений на три шари: service знає про API і його поля, store зберігає стан запиту, а view тільки викликає action і показує стан. Компоненти не читають raw-поля Open-Meteo.
+
+## Нормалізація: raw → внутрішні поля
+
+| Raw-поле Open-Meteo | Внутрішнє поле | Перетворення |
+| --- | --- | --- |
+| `daily.time[i]` | `id` | дата `2026-11-18`, використовується в URL |
+| `daily.time[i]` | `title` | «Середа, 18 листопада» через `toLocaleDateString('uk-UA')` |
+| `daily.weather_code[i]` | `category` | код WMO → `clear`, `cloudy`, `fog`, `rain`, `snow`, `storm` |
+| `daily.weather_code[i]` | `description` | код WMO → текст, наприклад 80 → «Невелика злива» |
+| `temperature_2m_max[i]` / `temperature_2m_min[i]` | `tempMax` / `tempMin` | число або `null` |
+| `precipitation_sum[i]` | `precipitation` | мм |
+| `precipitation_probability_max[i]` | `precipitationChance` | % |
+| `wind_speed_10m_max[i]` | `windMax` | м/с |
+| `uv_index_max[i]` | `uvIndex` | |
+| `sunrise[i]` / `sunset[i]` | `sunrise` / `sunset` | лише час `07:16` |
+| `hourly.*` за цю дату | `hours` | кожні 3 години: `{ time, temperature, precipitationChance, description }` |
+
+Перевірка структури: якщо `daily` немає, якийсь потрібний масив відсутній або довжини масивів не збігаються, `normalizeForecast()` кидає `Error('Некоректна структура відповіді')`. Значення, які не є числом, стають `null` і на сторінці показуються як «—». Якщо `hourly` зламаний, дні все одно показуються, лише без таблиці по годинах.
+
+## Action loadForecast і чотири стани
+
+```js
+async loadForecast(force = false) {
+  if (this.loading) return
+  if (this.hasLoaded && !force) return
+
+  this.loading = true
+  this.error = ''
+  try {
+    this.days = await fetchForecast()
+    this.hasLoaded = true
+  } catch (error) {
+    this.days = []
+    this.hasLoaded = false
+    this.error = errorMessage(error)
+    console.error(error)
+  } finally {
+    this.loading = false
+  }
+},
+
+retry() {
+  return this.loadForecast(true)
+},
+```
+
+- `if (this.loading) return` не дає запустити другий запит, поки йде перший.
+- `hasLoaded` показує, що дані вже успішно завантажені, тому після повернення з детальної сторінки повторного запиту немає. `loading` означає, що запит іде саме зараз.
+- `retry()` і кнопка «Оновити прогноз» передають `force = true`, щоб обійти `hasLoaded`.
+- `finally` завжди вимикає `loading`, і при успіху, і при помилці.
+- `errorMessage()` дає різний текст для HTTP-помилки (`HTTP 404`), обриву мережі (`TypeError`) і неправильної структури.
+
+| Стан | Умова | Що бачить користувач |
+| --- | --- | --- |
+| loading | `loading` або дані ще не завантажені | спінер і «Завантаження прогнозу…» (`role="status"`) |
+| error | `error` не порожній | червоне повідомлення і кнопка «Спробувати ще раз» (`role="alert"`) |
+| empty | запит успішний, але `days` порожній | «Сервіс погоди не повернув жодного дня прогнозу» |
+| success | є дні | фільтр, кнопка оновлення, картки |
+
+Стани взаємовиключні: вони стоять в одному ланцюжку `v-if` / `v-else-if` / `v-else`, тому старий прогноз і помилка одночасно не показуються.
+
+`loadForecast()` викликається в `onMounted` і в `WeatherView`, і в `WeatherDayView`. Тому пряме посилання `/weather/2026-11-18` у новій вкладці спочатку завантажує дані, а потім шукає день. «День не знайдено» показується лише після успішного запиту, під час завантаження його не видно.
+
+Обране з лаби 10 не змінювалось: воно стосується номерів, а номери лишились локальними, тому чистити `favoriteIds` після запиту не потрібно.
+
+## Скриншоти
+
+Success, прогноз на тиждень:
+
+![Success](images/screenshot-lab11-success.png)
+
+Loading (запит штучно затримано на 3 секунди):
+
+![Loading](images/screenshot-lab11-loading.png)
+
+Error, режим Offline:
+
+![Error offline](images/screenshot-lab11-error.png)
+
+Error, неіснуючий endpoint (HTTP 404):
+
+![Error 404](images/screenshot-lab11-http-error.png)
+
+Empty, `forecast_days=0`:
+
+![Empty](images/screenshot-lab11-empty.png)
+
+Детальна сторінка, відкрита прямим URL у новій вкладці:
+
+![Детальна сторінка](images/screenshot-lab11-detail.png)
+
+Невідома дата `/weather/2020-01-01`:
+
+![День не знайдено](images/screenshot-lab11-unknown-date.png)
+
+Network: один GET-запит, статус 200, тип fetch, ініціатор `weatherApi.js`:
+
+![Network](images/screenshot-lab11-network.png)
+
+Network, вкладка Headers: URL, метод GET, статус 200 OK, CORS-заголовки. Персональних даних у запиті немає: ні ключа, ні cookie.
+
+![Network Headers](images/screenshot-lab11-network-headers.png)
+
+## Результати перевірок
+
+1. Перший вхід на `/weather` робить один GET-запит. Перехід на день і повернення назад нових запитів не створюють (у Network так і лишається один запит).
+2. Offline: показується «Немає з'єднання із сервісом погоди» і кнопка повтору. Після повернення мережі «Спробувати ще раз» робить другий запит і показує 7 днів.
+3. Неіснуючий endpoint (`VITE_API_URL=https://api.open-meteo.com/v1/forecast-wrong`): `response.ok` дорівнює `false`, показується «Сервіс погоди відповів помилкою (HTTP 404)».
+4. `forecast_days=0`: API повертає порожні масиви, показується empty state.
+5. Пряме відкриття `/weather/2026-11-18` у новій вкладці: спочатку завантаження, потім потрібний день, рівно один запит.
+6. `/weather/2020-01-01`: під час завантаження «не знайдено» не з'являється, після запиту показується «День не знайдено» з діапазоном доступних дат.
+7. З лаби 10 все працює: каталог, пошук, обране, `/room/:id`, невідомий `id`, Back/Forward.
+8. На 360 і 768 px горизонтального прокручування немає (таблиця по годинах прокручується всередині свого блоку). `focus-visible` є на посиланнях і кнопках.
+9. У звичайній роботі в Console немає помилок і попереджень. `console.error` з'являється лише під час навмисних тестів помилок. `npm run build` завершується успішно, `node_modules` і `dist` не додаються до репозиторію.
+
+## Обмеження
+
+- Прогноз доступний лише на 7 днів наперед. Старе посилання на день зрештою стане «День не знайдено».
+- Дані не кешуються: після оновлення сторінки прогноз завантажується знову.
+- Координати точні до будинку, але модель погоди рахує сітку, тому API повертає найближчу точку (`50.4233, 30.4912`).
+- Ліміт безкоштовного API: 600 запитів за хвилину, для навчального проєкту цього достатньо.
+
+## Посилання та висновок
+
+Pull request: https://github.com/NazariiKhavruk/lab1-hotel/pull/10
+
+Коміти:
+- `feat: add open-meteo forecast service with response normalization`
+- `feat: load forecast in pinia store with loading and error state`
+- `feat: add weather pages with loading, error, empty states and retry`
+
+Висновок: у цій роботі я підключив до Vue-застосунку зовнішній REST API Open-Meteo. Зрозумів, що `fetch` не вважає HTTP 404 помилкою, тому `response.ok` треба перевіряти окремо, а відповідь стороннього сервісу краще одразу перетворювати на свою схему, щоб компоненти не залежали від його назв полів. Локальні дані (номери) завжди доступні і змінюються тільки разом із кодом. Зовнішні дані (погода) щодня нові, але можуть не завантажитися, тому для них потрібні стани loading, error, empty і кнопка повтору.
+
+---
+
 # Лабораторна робота №10
 
 ## Тема, мета та опис проєкту
