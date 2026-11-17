@@ -83,6 +83,9 @@ h3 {
   outline: 3px solid #93c5fd;
   outline-offset: 3px;
 }
+.main-nav a.router-link-active {
+  background-color: #dbeafe;
+}
 
 .content {
   max-width: 60rem;
@@ -125,6 +128,22 @@ h3 {
 .button:focus-visible {
   outline: 3px solid #93c5fd;
   outline-offset: 3px;
+}
+.button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+code {
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  background: #f3f4f6;
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+.not-found {
+  text-align: center;
 }
 
 .details-toggle {
