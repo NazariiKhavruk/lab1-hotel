@@ -51,3 +51,23 @@ export function readUserItems() {
 export function writeUserItems(items) {
   localStorage.setItem(KEY, JSON.stringify(items))
 }
+
+const FAVORITES_KEY = 'web-lab10:hotel-favorites:v1'
+
+export function readFavoriteIds() {
+  const raw = localStorage.getItem(FAVORITES_KEY)
+  if (raw === null) {
+    return []
+  }
+
+  const value = JSON.parse(raw)
+  if (!Array.isArray(value) || !value.every(Number.isInteger)) {
+    throw new Error('Некоректний список обраного')
+  }
+
+  return [...new Set(value)]
+}
+
+export function writeFavoriteIds(ids) {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(ids))
+}

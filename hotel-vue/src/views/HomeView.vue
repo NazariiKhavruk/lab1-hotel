@@ -1,26 +1,40 @@
 <script setup>
 import { computed, ref } from 'vue'
 import RoomList from '../components/RoomList.vue'
-import { categoryLabels, rooms } from '../data/rooms.js'
+import { categoryLabels } from '../data/rooms.js'
+import { useRoomsStore } from '../stores/rooms.js'
+
+const store = useRoomsStore()
 
 const query = ref('')
 const category = ref('all')
+const onlyFavorites = ref(false)
 
 const filteredRooms = computed(() => {
   const text = query.value.trim().toLowerCase()
 
-  return rooms.filter(
+  return store.rooms.filter(
     (item) =>
       (category.value === 'all' || item.category === category.value) &&
+      (!onlyFavorites.value || store.isFavorite(item.id)) &&
       `${item.title} ${item.description}`.toLowerCase().includes(text),
   )
 })
 
-const hasFilters = computed(() => query.value !== '' || category.value !== 'all')
+const hasFilters = computed(
+  () => query.value !== '' || category.value !== 'all' || onlyFavorites.value,
+)
+
+const emptyText = computed(() =>
+  onlyFavorites.value && store.favoriteCount === 0
+    ? 'В обраному поки немає номерів. Натисніть «До обраного» на картці.'
+    : 'Нічого не знайдено.',
+)
 
 function resetFilters() {
   query.value = ''
   category.value = 'all'
+  onlyFavorites.value = false
 }
 </script>
 
@@ -55,9 +69,14 @@ function resetFilters() {
       </div>
     </div>
 
+    <label class="checkbox-field">
+      <input v-model="onlyFavorites" type="checkbox" />
+      Лише обрані ({{ store.favoriteCount }})
+    </label>
+
     <p class="results-count" aria-live="polite">Знайдено: {{ filteredRooms.length }}</p>
     <RoomList :items="filteredRooms" />
-    <p v-if="filteredRooms.length === 0" class="empty-message">Нічого не знайдено.</p>
+    <p v-if="filteredRooms.length === 0" class="empty-message">{{ emptyText }}</p>
   </section>
 </template>
 

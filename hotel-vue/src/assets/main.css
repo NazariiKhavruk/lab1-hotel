@@ -87,6 +87,14 @@ h3 {
   background-color: #dbeafe;
 }
 
+.favorite-badge {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+}
+
 .content {
   max-width: 60rem;
   margin: 0 auto;
@@ -252,8 +260,34 @@ code {
   color: #6b7280;
 }
 
-.favorite-button {
+.checkbox-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.checkbox-field input {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin: 0;
+}
+
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   margin-top: 1rem;
+}
+
+.button-secondary {
+  border: 1px solid #2563eb;
+  background: #ffffff;
+  color: #2563eb;
+}
+.button-secondary:hover {
+  background: #dbeafe;
 }
 .favorite-button.is-active {
   background-color: #1d4ed8;
