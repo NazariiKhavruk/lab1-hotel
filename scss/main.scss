@@ -128,6 +128,18 @@ h3 {
   }
 }
 
+.details-toggle {
+  margin-top: v.$space-md;
+}
+
+.extra-details {
+  margin-top: v.$space-md;
+}
+
+.is-hidden {
+  display: none;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -159,6 +171,19 @@ h3 {
 .card-text {
   margin: 0;
   color: v.$color-muted;
+}
+
+.favorite-button {
+  margin-top: v.$space-md;
+
+  &.is-active {
+    background-color: v.$color-primary-dark;
+  }
+}
+
+.card.is-active {
+  border-color: v.$color-primary;
+  background: v.$color-primary-light;
 }
 
 .booking-form {
@@ -202,6 +227,21 @@ input, select, textarea {
 input:focus:invalid,
 textarea:focus:invalid {
   border-color: v.$color-error;
+}
+
+.guests-counter {
+  display: flex;
+  gap: v.$space-sm;
+}
+
+.counter-button {
+  flex: none;
+  padding: 0.625rem 1rem;
+
+  &:disabled {
+    background-color: v.$color-input-border;
+    cursor: not-allowed;
+  }
 }
 
 input[type="radio"] {
