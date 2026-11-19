@@ -1,0 +1,241 @@
+@use "variables" as v;
+@use "mixins" as m;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  line-height: 1.5;
+  color: v.$color-text;
+  background: v.$color-background;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+h1, h2, h3 {
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 0 0 v.$space-md;
+}
+
+h3 {
+  font-size: 1.15rem;
+}
+
+.site-header {
+  display: flex;
+  flex-direction: column;
+  gap: v.$space-md;
+  background: v.$color-surface;
+  padding: v.$space-md;
+  border-bottom: 1px solid v.$color-border;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: v.$color-primary;
+  }
+
+  @include m.respond-from(v.$bp-tablet) {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: v.$space-md v.$space-lg;
+
+    h1 {
+      font-size: 2rem;
+    }
+  }
+}
+
+.main-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$space-sm;
+
+  a {
+    padding: v.$space-sm 0.75rem;
+    border-radius: v.$radius-sm;
+    color: v.$color-primary;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+      background-color: v.$color-primary-light;
+    }
+
+    &:focus-visible {
+      @include m.focus-ring(3px);
+    }
+  }
+}
+
+.content {
+  max-width: v.$content-width;
+  margin: 0 auto;
+  padding: v.$space-md;
+
+  @include m.respond-from(v.$bp-tablet) {
+    padding: v.$space-lg;
+  }
+}
+
+.section {
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-md;
+  padding: v.$space-md;
+  margin-bottom: v.$space-md;
+
+  @include m.respond-from(v.$bp-tablet) {
+    padding: v.$space-md * 1.5;
+  }
+}
+
+.button {
+  display: inline-block;
+  border: 0;
+  cursor: pointer;
+  padding: 0.625rem 1.125rem;
+  border-radius: v.$radius-md;
+  background-color: v.$color-primary;
+  color: v.$color-surface;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    background-color: v.$color-primary-dark;
+  }
+
+  &:focus-visible {
+    @include m.focus-ring(3px);
+  }
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$space-md;
+  margin-bottom: v.$space-md;
+
+  @include m.respond-from(v.$bp-tablet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include m.respond-from(v.$bp-desktop) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.card {
+  background: v.$color-background;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-md;
+  padding: v.$space-md;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.card-title {
+  margin: 0 0 v.$space-sm;
+  color: v.$color-text;
+}
+
+.card-text {
+  margin: 0;
+  color: v.$color-muted;
+}
+
+.booking-form {
+  display: grid;
+  gap: v.$space-md;
+  max-width: 40rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: v.$space-md;
+
+  @include m.respond-from(v.$bp-tablet) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form-field {
+  display: grid;
+  gap: 0.375rem;
+
+  label {
+    font-weight: 600;
+  }
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid v.$color-input-border;
+  border-radius: v.$radius-sm;
+  background: v.$color-surface;
+  color: v.$color-text;
+
+  &:focus-visible {
+    @include m.focus-ring;
+  }
+}
+
+input:focus:invalid,
+textarea:focus:invalid {
+  border-color: v.$color-error;
+}
+
+input[type="radio"] {
+  width: auto;
+}
+
+.form-fieldset {
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-sm;
+  padding: 0.625rem 0.75rem;
+
+  legend {
+    font-weight: 600;
+  }
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$space-md;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+}
+
+.site-footer {
+  text-align: center;
+  padding: v.$space-md;
+  color: v.$color-muted;
+
+  p {
+    margin: 0;
+  }
+}

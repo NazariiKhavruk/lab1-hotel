@@ -1,0 +1,13 @@
+{
+  "name": "lab1-hotel",
+  "version": "1.0.0",
+  "description": "Сайт готелю Hilton Київ",
+  "scripts": {
+    "sass": "sass --no-source-map --watch scss/main.scss:css/styles.css",
+    "build": "sass --no-source-map scss/main.scss:css/styles.css"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "sass": "^1.105.2"
+  }
+}
