@@ -1,3 +1,160 @@
+# Лабораторна робота №10
+
+## Тема, мета та опис проєкту
+
+Тема: маршрутизація та спільний стан у Vue 3 із Vue Router і Pinia.
+
+Мета: навчитися налаштовувати Vue Router і Pinia, робити маршрути списку й детальної сторінки, передавати параметр `id`, знаходити об'єкт у сховищі та змінювати спільний стан без зовнішнього API.
+
+Опис проєкту: сайт готелю Hilton Київ (варіант 20), продовження Vue-проєкту з лаби 9 у папці `hotel-vue/`. Тепер замість однієї довгої сторінки є окремі сторінки: каталог номерів, детальна сторінка номера, мої нотатки і сторінка «не знайдено». Номери та список обраних зберігаються в Pinia, тому позначка «обране» однакова на всіх сторінках, а лічильник видно в шапці.
+
+## Встановлення та запуск
+
+Версії: Node.js 24.22.1, Vue 3.5.45, Vue Router 5.5.1, Pinia 4.1.0, Vite 8.3.8.
+
+```
+git switch -c lab-10-router-pinia
+cd hotel-vue
+npm install vue-router pinia
+npm run dev
+npm run build
+```
+
+Router і Pinia не обиралися під час `create-vue` у лабі 9, тому встановлені окремо. Після `git pull` на іншому комп'ютері достатньо `npm install`. У PowerShell замість `npm` писати `npm.cmd`.
+
+## Структура `src`
+
+```
+hotel-vue/src/
+├── assets/main.css           стилі
+├── components/
+│   ├── RoomCard.vue          картка номера: «Докладніше» і «До обраного»
+│   ├── RoomList.vue          список карток
+│   ├── UserNoteForm.vue      форма нотатки (з лаби 9)
+│   └── UserNoteList.vue      список нотаток (з лаби 9)
+├── data/
+│   ├── rooms.js              8 номерів, назви категорій
+│   └── userCategories.js
+├── router/index.js           маршрути
+├── stores/rooms.js           Pinia store
+├── views/
+│   ├── HomeView.vue          каталог, пошук, фільтр
+│   ├── RoomDetailView.vue    детальна сторінка номера
+│   ├── NotesView.vue         мої нотатки
+│   └── NotFoundView.vue      невідома адреса
+├── storage.js                localStorage для нотаток і обраного
+├── App.vue                   шапка, RouterView, футер
+└── main.js                   підключення Pinia і Router
+```
+
+`App.vue` тепер лише каркас: у шапці `RouterLink` на сторінки і лічильник обраного, у `main` стоїть `<RouterView />`. Код каталогу перенесено в `HomeView.vue`, а нотаток у `NotesView.vue`.
+
+До номерів додано поля для детальної сторінки: `area`, `guests`, `bed`, `view`, `price`, `amenities`. Шляхи до фото тепер абсолютні (`/images/...`), бо з адреси `/room/5` відносний шлях `images/...` шукав би файл у `/room/images/`.
+
+## Маршрути
+
+| Шлях | name | Компонент | Що показує |
+| --- | --- | --- | --- |
+| `/` | — | — | перенаправляє на `/rooms` |
+| `/rooms` | `home` | `HomeView` | каталог номерів, пошук, категорія, «Лише обрані» |
+| `/room/:id` | `room` | `RoomDetailView` | один номер за `id` або повідомлення «Номер не знайдено» |
+| `/notes` | `notes` | `NotesView` | мої нотатки до поїздки |
+| `/:pathMatch(.*)*` | `not-found` | `NotFoundView` | будь-яка невідома адреса |
+
+Використано `createWebHistory`, тому адреси звичайні, без `#`. У `meta.title` кожного маршруту записана назва сторінки, а `router.afterEach` ставить її в заголовок вкладки.
+
+## Pinia store
+
+Файл `src/stores/rooms.js`, store `rooms`:
+
+| Частина | Назва | Що робить |
+| --- | --- | --- |
+| state | `rooms` | масив номерів з `data/rooms.js` |
+| state | `favoriteIds` | масив `id` обраних номерів |
+| getter | `favoriteCount` | кількість обраних, показується в шапці |
+| getter | `isFavorite(id)` | чи є номер в обраному |
+| action | `toggleFavorite(id)` | додає або прибирає номер з обраного |
+
+Getter `isFavorite` повертає функцію, бо йому потрібен `id`:
+
+```js
+isFavorite: (state) => (id) => state.favoriteIds.includes(id),
+```
+
+Його використовують картка і детальна сторінка: для тексту кнопки, `aria-pressed` і класу `is-active`.
+
+Action `toggleFavorite` не змінює масив через `push`, а записує новий масив:
+
+```js
+toggleFavorite(id) {
+  this.favoriteIds = this.favoriteIds.includes(id)
+    ? this.favoriteIds.filter((roomId) => roomId !== id)
+    : [...this.favoriteIds, id]
+  writeFavoriteIds(this.favoriteIds)
+},
+```
+
+Компоненти не змінюють `favoriteIds` напряму, а тільки викликають `store.toggleFavorite(id)`. Так вся логіка зміни лежить в одному місці. Текст пошуку, категорія і «Лише обрані» потрібні тільки каталогу, тому вони лишились локальними `ref` у `HomeView`.
+
+Додатково (як повторення лаби 8): `favoriteIds` зберігаються в `localStorage` під ключем `web-lab10:hotel-favorites:v1`. При завантаженні список перевіряється, а `id`, яких немає в каталозі, відкидаються.
+
+## Детальна сторінка і невідомий id
+
+```js
+const route = useRoute()
+const room = computed(() =>
+  store.rooms.find((entry) => String(entry.id) === String(route.params.id)),
+)
+```
+
+`route.params.id` завжди рядок, а `id` у масиві число, тому обидва перетворюються на рядок. Якщо номер не знайдено, замість порожньої сторінки показується «Номер не знайдено» з посиланням до каталогу. Внизу детальної сторінки є посилання на інші номери тієї ж категорії. Вони ведуть на той самий маршрут з іншим `id`, і сторінка оновлюється, бо `room` це `computed` від `route.params.id`.
+
+## Скриншоти
+
+Каталог: два номери в обраному, лічильник у шапці:
+
+![Каталог з обраним](images/screenshot-lab10-list.png)
+
+Детальна сторінка `/room/5`:
+
+![Детальна сторінка](images/screenshot-lab10-detail.png)
+
+Невідомий id `/room/99`:
+
+![Номер не знайдено](images/screenshot-lab10-not-found.png)
+
+Vue DevTools, вкладка Router: усі маршрути, активний `/room/:id`:
+
+![Vue DevTools Router](images/screenshot-lab10-devtools-router.png)
+
+Vue DevTools, вкладка Pinia: store `rooms`, `favoriteIds` з двома елементами, `favoriteCount: 2`:
+
+![Vue DevTools Pinia](images/screenshot-lab10-devtools-pinia.png)
+
+## Результати перевірок
+
+1. `/rooms`, `/room/5`, `/notes` і невідома адреса відкривають свої компоненти без повного перезавантаження сторінки (перевірено змінною у `window`, яка не зникає після переходу).
+2. Кожна картка веде на правильний `/room/:id`. Кнопки Back і Forward браузера працюють, пряме введення `/room/3` у адресний рядок відкриває потрібний номер.
+3. `/room/99` і `/room/abc` показують «Номер не знайдено» з посиланням до каталогу. `/hotel/spa` показує «Сторінку не знайдено».
+4. Обране синхронізується: номер, доданий у каталозі, позначений на детальній сторінці, і навпаки. Лічильник у шапці змінюється одразу.
+5. У Vue DevTools видно маршрути (Router) і store `rooms` (Pinia). Зміна `favoriteIds` у DevTools оновлює і картки, і лічильник.
+6. Фільтр «Лише обрані» працює разом із пошуком і категорією. Якщо обраного немає, показується підказка.
+7. Збережено доступність з попередніх лаб: підписи полів, `focus-visible`, `aria-pressed` на кнопці обраного, порожні стани. На 360 і 768 px горизонтального прокручування немає.
+8. У Console немає помилок і попереджень, `npm run build` завершується успішно.
+
+## Посилання та висновок
+
+Pull request: https://github.com/NazariiKhavruk/lab1-hotel/pull/9
+
+Коміти:
+- `feat: add vue router with rooms, notes and not found pages`
+- `feat: add pinia store with favorite rooms`
+- `feat: add room detail page with favorites and unknown id state`
+
+Висновок: у цій роботі я підключив Vue Router і Pinia до проєкту з лаби 9. Зробив маршрути каталогу, детальної сторінки, нотаток і catch-all для невідомих адрес, навчився передавати `id` через `:id` і читати його через `useRoute()`. Зрозумів, що в Pinia варто виносити тільки стан, який потрібен кільком сторінкам (тут це обране), а стан однієї сторінки, як пошук, краще лишати в компоненті. У лабі 11 масив номерів залишиться локальним, а з API буде завантажуватись прогноз погоди для гостей.
+
+---
+
 # Лабораторна робота №9
 
 ## Тема, мета та опис проєкту
