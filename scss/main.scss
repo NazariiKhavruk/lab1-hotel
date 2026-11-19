@@ -13,6 +13,10 @@ body {
   background: v.$color-background;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 img {
   display: block;
   max-width: 100%;
@@ -141,6 +145,33 @@ h3 {
 }
 
 .catalog-controls {
+  margin-bottom: v.$space-md;
+
+  &.form-row {
+    @include m.respond-from(v.$bp-tablet) {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+}
+
+.load-status {
+  margin: 0 0 v.$space-md;
+  color: v.$color-muted;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.load-error {
+  margin: 0 0 v.$space-sm;
+  padding: v.$space-sm 0.75rem;
+  border: 1px solid v.$color-error;
+  border-radius: v.$radius-sm;
+  color: v.$color-error;
+}
+
+.retry-button {
   margin-bottom: v.$space-md;
 }
 
