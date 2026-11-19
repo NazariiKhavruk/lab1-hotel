@@ -13,6 +13,7 @@
             <a href="#about">Про готель</a>
             <a href="#rooms">Номери</a>
             <a href="#services">Послуги</a>
+            <a href="#booking">Бронювання</a>
             <a href="#contacts">Контакти</a>
         </nav>
     </header>
@@ -42,7 +43,7 @@
                     <p class="card-text">2-4 особи, окрема вітальня</p>
                 </article>
             </div>
-            <a href="#contacts" class="button">Забронювати номер</a>
+            <a href="#booking" class="button">Забронювати номер</a>
             <img src="images/room.avif" alt="Номер категорії Deluxe в готелі Hilton">
         </section>
 
@@ -57,9 +58,81 @@
             <p>Забронювати номер можна на офіційному сайті або через <a href="https://www.booking.com" target="_blank" rel="noopener">Booking.com</a>.</p>
         </section>
 
+        <section class="section" id="booking">
+            <h2>Бронювання номера</h2>
+            <p>Заповніть форму, і ми зв’яжемося з вами для підтвердження.</p>
+            <form class="booking-form" action="#" method="post">
+                <div class="form-field">
+                    <label for="name">Ім’я</label>
+                    <input id="name" name="name" type="text" minlength="2" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="email">E-mail</label>
+                        <input id="email" name="email" type="email" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="phone">Телефон</label>
+                        <input id="phone" name="phone" type="tel" pattern="\+?[0-9\s\(\)\-]{10,18}" title="Наприклад: +38 (044) 393-56-01" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="checkin">Дата заїзду</label>
+                        <input id="checkin" name="checkin" type="date" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="checkout">Дата виїзду</label>
+                        <input id="checkout" name="checkout" type="date" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label for="room">Категорія номера</label>
+                        <select id="room" name="room" required>
+                            <option value="">Оберіть категорію</option>
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Executive Suite</option>
+                        </select>
+                    </div>
+                    <div class="form-field">
+                        <label for="guests">Кількість гостей</label>
+                        <input id="guests" name="guests" type="number" min="1" max="4" value="1" required>
+                    </div>
+                </div>
+
+                <fieldset class="form-fieldset">
+                    <legend>Сніданок</legend>
+                    <div class="radio-group">
+                        <label><input type="radio" name="breakfast" value="yes" checked> З сніданком</label>
+                        <label><input type="radio" name="breakfast" value="no"> Без сніданку</label>
+                    </div>
+                </fieldset>
+
+                <div class="form-field">
+                    <label for="comment">Побажання</label>
+                    <textarea id="comment" name="comment" rows="4" maxlength="500"></textarea>
+                </div>
+
+                <button type="submit" class="button">Надіслати заявку</button>
+            </form>
+        </section>
+
         <section class="section" id="contacts">
             <h2>Контакти</h2>
             <address>
                 м. Київ, вул. Тараса Шевченка, 30<br>
-                Телефон: +38 (044) 393-56-01<br>
-                E-mail:
+                Телефон: +38 (044) 393-56-01
+            </address>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>© 2026 Готель Hilton Київ</p>
+    </footer>
+</body>
+</html>
