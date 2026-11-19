@@ -34,21 +34,24 @@
         <section class="section" id="rooms">
             <h2>Номери</h2>
             <p>У всіх номерах є кондиціонер, сейф і безкоштовний Wi-Fi. Прибирання — щодня.</p>
-            <div class="card-grid">
-                <article class="card">
-                    <h3 class="card-title">Standard</h3>
-                    <p class="card-text">1-2 особи</p>
-                </article>
-                <article class="card">
-                    <h3 class="card-title">Deluxe</h3>
-                    <p class="card-text">2 особи, вид на місто</p>
-                    <button class="button favorite-button" type="button" aria-pressed="false">Додати в обране</button>
-                </article>
-                <article class="card">
-                    <h3 class="card-title">Executive Suite</h3>
-                    <p class="card-text">2-4 особи, окрема вітальня</p>
-                </article>
+            <div class="form-row catalog-controls">
+                <div class="form-field">
+                    <label for="room-search">Пошук</label>
+                    <input id="room-search" type="search" placeholder="Введіть назву або опис">
+                </div>
+                <div class="form-field">
+                    <label for="category-filter">Категорія</label>
+                    <select id="category-filter">
+                        <option value="all">Усі</option>
+                        <option value="standard">Standard</option>
+                        <option value="deluxe">Deluxe</option>
+                        <option value="suite">Suite</option>
+                    </select>
+                </div>
             </div>
+            <p id="results-count" class="results-count" aria-live="polite"></p>
+            <div id="room-grid" class="card-grid"></div>
+            <p id="empty-message" class="empty-message" hidden>Нічого не знайдено.</p>
             <a href="#booking" class="button">Забронювати номер</a>
             <img src="images/room.avif" alt="Номер категорії Deluxe в готелі Hilton">
         </section>
@@ -145,6 +148,6 @@
         <p>© 2026 Готель Hilton Київ</p>
     </footer>
 
-    <script src="js/main.js" defer></script>
+    <script src="js/scripts.js" defer></script>
 </body>
 </html>
